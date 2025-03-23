@@ -7,7 +7,8 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
-  TextInput
+  TextInput,
+  Modal
 } from 'react-native';
 
 class App extends Component {
@@ -18,9 +19,17 @@ class App extends Component {
       precoalcool:"",
       precogasolina:"",
       resultado: null,
+      modalVisible: false,
     } ;
 
+    this.entrar = this.entrar.bind(this);
+    this.sair = this.sair.bind(this);
+
     }
+
+    entrar(){this.setState({modalVisible:true})};
+    sair(visible) {this.setState({modalVisible:visible})};
+    
 
     calcularMelhorOpcao = () => {
       const { precoalcool, precogasolina } = this.state;
@@ -74,13 +83,38 @@ class App extends Component {
         onChangeText={(texto) => this.setState({ precogasolina: texto })} // Atualiza o estado ao digitar
         />
 
-        <TouchableOpacity style={styles.button}  onPress={this.calcularMelhorOpcao}>
+        <TouchableOpacity style={styles.button}  onPress={() => {this.calcularMelhorOpcao() ; this.entrar();}}>
         <Text style={styles.buttonText}>Calcular</Text>
         </TouchableOpacity>
 
-        {this.state.resultado && (
+          <Modal animationType="slide" transparent={false} visible={this.state.modalVisible}>
+            
+    
+            <View style={styles.telamodal}>
+
+            <View  style={styles.logo}>
+              <Image
+                source={require('./src/img/gas.png')}
+                style={styles.imgsair} />
+            </View>
+            
+            {this.state.resultado && (
+          <View>
             <Text style={styles.resultado}>{this.state.resultado}</Text>
-          )}
+            <Text style={styles.precoAlcool}>Preço Alcool: R$ {this.state.precoalcool}</Text>
+            <Text style={styles.precoGasolina}>Preço Gasolina: R$ {this.state.precogasolina}</Text>
+          </View> )}
+
+
+              
+              
+              <TouchableOpacity style={styles.labelbottonsair} onPress={()=>this.sair(false)}>
+                <Text style={styles.buttonsair}>Calcular Novamente</Text>
+              </TouchableOpacity>
+            </View>
+
+       
+          </Modal>
 
 
       </View>
@@ -141,7 +175,6 @@ const styles = StyleSheet.create({
 
   input:{
     height:40,
-    width:'100$',
     backgroundColor:'#FFFFFF',
     fontSize:15,
     padding:10,
@@ -164,12 +197,53 @@ const styles = StyleSheet.create({
     fontSize: 18,                // Tamanho da fonte
     textAlign: 'center',         // Alinhamento centralizado
   },
-  resultado: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    marginTop: 20,
+ 
+  telamodal:{
+    flex:1,
+    backgroundColor:'#000000',
+    alignItems:'center',
+    justifyContent:'center',
+  },
+  buttonsair:{
+    color:'#FF0000',    
+    height:40,
+    width:250,
+    fontSize:20,
+    padding:5,
+    textAlign:'center',
+    borderRadius:5,
+    borderColor:'#FF0000',
+    borderWidth:1,
     fontWeight: 'bold',
-    textAlign: 'center',
+  },
+  labelbottonsair:{
+    marginTop
+    :50,
+    marginBottom:100,
+  },
+  imgsair:{
+    width:200,
+    height:200,
+    marginBottom:50,
+    alignItems:'center',
+  },
+  resultado: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "green",
+    textAlign: "center",
+    marginBottom:50,
+  },
+  precoGasolina: {
+    fontSize: 18,
+    color: "white",
+    textAlign: "center",
+  },
+  precoAlcool: {
+    fontSize: 18,
+    color: "white",
+    textAlign: "center",
+  
   },
   
 });
